@@ -3,14 +3,11 @@ package com.example.login
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -24,15 +21,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -41,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.login.ui.theme.LoginTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,7 +57,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Login(
-    visibility: MutableState<Boolean> = remember { mutableStateOf(false) }
+
 ) {
     var name : String by remember {mutableStateOf("")}
     var password : String by remember {mutableStateOf("")}
@@ -97,26 +93,26 @@ fun Login(
                 .padding(top = 16.dp)
         )
         OutlinedTextField(
-            value=password,
-            onValueChange={password = it.replace(',','.')},
+            value = password,
+            onValueChange = { newPassword ->
+                password = newPassword.replace(',', '.')
+            },
             label = { Text("Password") },
             placeholder = { Text(text = "Type your password") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-
             trailingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(25.dp)
-                        .clickable {
-                            visibility.value = !visibility.value
-                        },
-                    //tint = if (visibility.value) titleColor else fadedTextColor
-                )
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    val unlockedColor = Color.Black
+                    val lockedColor = Color.Gray
+                    Icon(
+                        imageVector = if (passwordVisible) Icons.Default.Lock else Icons.Default.Lock,
+                        tint= if (passwordVisible) unlockedColor else lockedColor,
+                        contentDescription = "Toggle password visibility"
+                    )
+                }
             },
-            singleLine=true,
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
